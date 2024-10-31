@@ -1,7 +1,6 @@
 package com.microservice.student.microservice_student.controller;
 
 import com.microservice.student.microservice_student.entities.Student;
-import com.microservice.student.microservice_student.repositories.StudentRepository;
 import com.microservice.student.microservice_student.service.IStudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
