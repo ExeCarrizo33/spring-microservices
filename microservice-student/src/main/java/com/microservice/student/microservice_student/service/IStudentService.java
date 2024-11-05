@@ -11,7 +11,7 @@ public interface IStudentService {
 
     Student findById(Long id);
 
-    List<Student> findByIdCourse(Long idCourse);
+    List<Student> findByIdCourse(Long courseId);
 
     void save(Student student);
 

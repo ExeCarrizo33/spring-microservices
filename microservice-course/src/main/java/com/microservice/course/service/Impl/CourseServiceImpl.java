@@ -35,12 +35,12 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public StudentByCourseResponse findStudentByIdCourse(Long idCourse) {
+    public StudentByCourseResponse findStudentByIdCourse(Long courseId) {
 
         /*Consulto el curso*/
-        Course course = courseRepository.findById(idCourse).orElseThrow();
+        Course course = courseRepository.findById(courseId).orElseThrow();
 
-        List<StudentDTO> studentDTOList = studentClient.findAllStudentsByCourse(idCourse);
+        List<StudentDTO> studentDTOList = studentClient.findAllStudentByCourse(courseId);
 
         return StudentByCourseResponse.builder()
                 .courseName(course.getName())

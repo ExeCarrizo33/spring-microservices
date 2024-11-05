@@ -13,6 +13,6 @@ public interface ICourseService {
 
     void save(Course course);
 
-    StudentByCourseResponse findStudentByIdCourse(Long idCourse);
+    StudentByCourseResponse findStudentByIdCourse(Long courseId);
 
 }
