@@ -19,8 +19,8 @@ La arquitectura incluye:
 
 - **Spring Boot** - Desarrollo de microservicios
 - **Spring Cloud** - Eureka, API Gateway, Config Server
-      - **Netflix Eureka** - Registro y descubrimiento de servicios
-      - **Spring Cloud Gateway** - Manejo de peticiones y balanceo de carga
+- **Netflix Eureka** - Registro y descubrimiento de servicios
+- **Spring Cloud Gateway** - Manejo de peticiones y balanceo de carga
 
 ## Instalación y Ejecución
 
