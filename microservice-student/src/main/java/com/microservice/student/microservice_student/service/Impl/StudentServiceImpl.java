@@ -25,8 +25,8 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public Student findByIdCourse(Long idCourse) {
-        return (Student) studentRepository.findAllByCourseId(idCourse);
+    public List<Student> findByIdCourse(Long idCourse) {
+        return (List<Student>) studentRepository.findAllByCourseId(idCourse);
     }
 
     @Override
