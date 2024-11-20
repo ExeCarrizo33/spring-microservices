@@ -1,73 +1,62 @@
-
 services:
-  config-server:
-    build:
-      context: ./microservice-config
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    networks:
-      - microservices-network
-
   eureka-server:
-    build:
-      context: ./microservice-eureka
-    container_name: eureka-server
+    build: ./microservice-eureka
     ports:
       - "8761:8761"
-    networks:
-      - microservices-network
-    depends_on:
-      - config-server
-    environment:
-      - CONFIG_SERVER_URI=http://config-server:8888
 
-  student-service:
-    build:
-      context: ./microservice-student
-    container_name: student-service
-    ports:
-      - "8090:8090"
-    networks:
-      - microservices-network
-    depends_on:
-      - config-server
-      - eureka-server
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - EUREKA_SERVER_URI=http://eureka-server:8761/eureka
-
-  course-service:
-    build:
-      context: ./microservice-course
-    container_name: course-service
-    ports:
-      - "9090:9090"
-    networks:
-      - microservices-network
-    depends_on:
-      - config-server
-      - eureka-server
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - EUREKA_SERVER_URI=http://eureka-server:8761/eureka
-
-  gateway:
-    build:
-      context: ./microservice-gateway
-    container_name: api-gateway
+  api-gateway:
+    build: ./microservice-gateway
     ports:
       - "8080:8080"
-    networks:
-      - microservices-network
     depends_on:
       - eureka-server
-      - student-service
-      - course-service
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - EUREKA_SERVER_URI=http://eureka-server:8761/eureka
 
-networks:
-  microservices-network:
-    driver: bridge
+  config-server:
+    build: ./microservice-config
+    ports:
+      - "8888:8888"
+
+  postgres-db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: coursesDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sasa1234
+    ports:
+      - "5432:5432"
+
+  mysql-db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: studentDb
+      MYSQL_ROOT_PASSWORD: sasa1234
+    ports:
+      - "3307:3306"
+
+  course-service:
+    build: ./microservice-course
+    ports:
+      - "9090:9090"
+    depends_on:
+      - eureka-server
+      - config-server
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/coursesDb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: sasa1234
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+  student-service:
+    build: ./microservice-student
+    ports:
+      - "8090:8090"
+    depends_on:
+      - eureka-server
+      - config-server
+      - mysql-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/studentDb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: sasa1234
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
