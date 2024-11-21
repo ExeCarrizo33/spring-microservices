@@ -11,13 +11,14 @@ spring:
           enabled: true
       routes:
         - id: students
-          uri: 'http://localhost:8090'
+          uri: 'http://student-service:8090'
           predicates:
             - Path=/api/student/**
         - id: courses
-          uri: 'http://localhost:9090'
+          uri: 'http://student-service:8090'
           predicates:
             - Path=/api/course/**
 eureka:
   client:
-    register-with-eureka: false
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka # Conexión a Eureka

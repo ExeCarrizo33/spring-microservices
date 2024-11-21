@@ -6,7 +6,7 @@ spring:
     name: msvc-student
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/studentDb
+    url: jdbc:mysql://mysql-db:3306/studentDb # Cambiado "localhost" por "mysql-db" (nombre del servicio en Docker Compose)
     username: root
     password: sasa1234
   jpa:
@@ -17,8 +17,7 @@ spring:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: student-service # Nombre del microservicio para Eureka
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
-
+      defaultZone: http://eureka-server:8761/eureka # Conexión al servicio Eureka

@@ -1,8 +1,12 @@
+version: '3.9'
+
 services:
   eureka-server:
     build: ./microservice-eureka
     ports:
       - "8761:8761"
+    networks:
+      - app-network
 
   api-gateway:
     build: ./microservice-gateway
@@ -10,11 +14,24 @@ services:
       - "8080:8080"
     depends_on:
       - eureka-server
+      - course-service
+      - student-service
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - app-network
 
   config-server:
     build: ./microservice-config
     ports:
-      - "8888:8888"
+      - "8888:8888"  # Exponiendo el puerto 8888
+    networks:
+      - app-network  # Asegúrate de que esté en la misma red
+    environment:
+      - SPRING_PROFILES_ACTIVE=native  # Asegúrate de que el perfil nativo esté activo
+    volumes:
+      - ./configurations:/configurations  # Montando la carpeta de configuraciones (si la tienes localmente)
+
 
   postgres-db:
     image: postgres:13
@@ -24,6 +41,8 @@ services:
       POSTGRES_PASSWORD: sasa1234
     ports:
       - "5432:5432"
+    networks:
+      - app-network
 
   mysql-db:
     image: mysql:8
@@ -32,6 +51,8 @@ services:
       MYSQL_ROOT_PASSWORD: sasa1234
     ports:
       - "3307:3306"
+    networks:
+      - app-network
 
   course-service:
     build: ./microservice-course
@@ -46,6 +67,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: sasa1234
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - app-network
 
   student-service:
     build: ./microservice-student
@@ -60,3 +83,9 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: sasa1234
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
